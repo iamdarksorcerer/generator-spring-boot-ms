@@ -1,0 +1,25 @@
+{
+  "name": "generator-spring-boot-gradle-ms",
+  "version": "1.0.0",
+  "description": "The yeoman generator for spring boot based microservices",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xaeronation/generator-spring-boot-gradle-ms.git"
+  },
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "author": "Vlad Mayakov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xaeronation/generator-spring-boot-gradle-ms/issues"
+  },
+  "homepage": "https://github.com/xaeronation/generator-spring-boot-gradle-ms#readme",
+  "dependencies": {
+    "yeoman-generator": "3.2.0"
+  }
+}
