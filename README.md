@@ -11,3 +11,4 @@ Currently only installation from source code is available
 - [x] Gradle / Maven
 - [ ] Multiple Spring Boot versions (only `1.5.18` supported at this moment)
 - [ ] Multiple Java versions (only `Java 8` supported at this moment)
+- [x] Allow ops components selection (actuator and actuator docs)

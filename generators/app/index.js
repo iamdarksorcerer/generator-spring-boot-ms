@@ -70,6 +70,10 @@ module.exports = class extends Generator {
             name: 'Actuator',
             value: 'actuator',
             checked: true
+          }, {
+            name: 'Actuator documentation',
+            value: 'actuatorDocs',
+            checked: false
           },
         ]
       }, {
@@ -109,8 +113,6 @@ module.exports = class extends Generator {
 
     if (this.props.buildTool === 'gradle') {
       const gradleWrapperPath = 'gradle/wrapper';
-      this.log(this.props.coreComponents);
-      this.log(this.props.coreComponents.indexOf('actuator'));
       const buildGradleContext = {
         packageName: this.props.packageName,
         baseName: this.props.baseName,
@@ -118,6 +120,7 @@ module.exports = class extends Generator {
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
         actuator: this.props.opsComponents.indexOf('actuator') !== -1,
+        actuatorDocs: this.props.opsComponents.indexOf('actuatorDocs') !== -1,
         lombok: this.props.coreComponents.indexOf('lombok') !== -1
       };
       const settingsGradleContext = {
@@ -168,6 +171,7 @@ module.exports = class extends Generator {
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
         actuator: this.props.opsComponents.indexOf('actuator') !== -1,
+        actuatorDocs: this.props.opsComponents.indexOf('actuatorDocs') !== -1,
         lombok: this.props.coreComponents.indexOf('lombok') !== -1
       };
 
