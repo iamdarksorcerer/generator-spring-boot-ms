@@ -91,7 +91,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const isSelected = function name(components, componentName) {
+    const isSelected = function(components, componentName) {
       return components.indexOf(componentName) !== -1;
     };
 
