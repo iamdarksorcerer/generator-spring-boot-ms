@@ -36,9 +36,6 @@ module.exports = class extends Generator {
           {
             name: 'Java 8',
             value: '1.8',
-          }, {
-            name: 'Java 9',
-            value: '1.9'
           }
         ]
       }, {
@@ -51,6 +48,19 @@ module.exports = class extends Generator {
             value: '1.5.18.RELEASE'
           }
         ]
+      }, {
+        type: 'list',
+        name: 'buildTool',
+        message: 'Build tool',
+        choices: [
+          {
+            name: 'Gradle',
+            value: 'gradle',
+          }, {
+            name: 'Maven',
+            value: 'maven'
+          }
+        ]
       }
     ];
 
@@ -59,69 +69,105 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    // Helpers
     const packageTplPath = 'net/nineseventwo/template';
     const packagePath = path.join(this.props.packageName.replace(/\./g, '/'), this.props.baseName);
-    const gradleWrapperPath = 'gradle/wrapper';
     const srcMainJavaPath = 'src/main/java';
     const srcMainResourcesPath = 'src/main/resources';
     const srcMainTestPath = 'src/test/java';
 
-    // Templates context
-    const buildGradleContext = {
-      packageName: this.props.packageName,
-      baseName: this.props.baseName,
-      serviceVersion: this.props.serviceVersion,
-      javaVersion: this.props.javaVersion
-    };
-    const settingsGradleContext = {
-      packageName: this.props.packageName,
-      baseName: this.props.baseName,
-      serviceVersion: this.props.serviceVersion,
-      javaVersion: this.props.javaVersion
-    };
     const applicationContext = {
       packageName: this.props.packageName,
       baseName: this.props.baseName
     };
 
-    // Copying
     this.fs.copy(
       this.templatePath('.gitignore'),
       this.destinationPath('.gitignore')
     );
 
-    this.fs.copyTpl(
-      this.templatePath('build.gradle'),
-      this.destinationPath('build.gradle'),
-      buildGradleContext
-    );
+    if (this.props.buildTool === 'gradle') {
+      const gradleWrapperPath = 'gradle/wrapper';
 
-    this.fs.copyTpl(
-      this.templatePath('settings.gradle'),
-      this.destinationPath('settings.gradle'),
-      settingsGradleContext
-    );
+      const buildGradleContext = {
+        packageName: this.props.packageName,
+        baseName: this.props.baseName,
+        serviceVersion: this.props.serviceVersion,
+        javaVersion: this.props.javaVersion
+      };
+      const settingsGradleContext = {
+        packageName: this.props.packageName,
+        baseName: this.props.baseName,
+        serviceVersion: this.props.serviceVersion,
+        javaVersion: this.props.javaVersion
+      };
 
-    this.fs.copy(
-      this.templatePath('gradlew'),
-      this.destinationPath('gradlew')
-    );
+      this.fs.copyTpl(
+        this.templatePath('build.gradle'),
+        this.destinationPath('build.gradle'),
+        buildGradleContext
+      );
 
-    this.fs.copy(
-      this.templatePath('gradlew.bat'),
-      this.destinationPath('gradlew.bat')
-    );
+      this.fs.copyTpl(
+        this.templatePath('settings.gradle'),
+        this.destinationPath('settings.gradle'),
+        settingsGradleContext
+      );
 
-    this.fs.copy(
-      this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.jar')),
-      this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.jar'))
-    );
+      this.fs.copy(
+        this.templatePath('gradlew'),
+        this.destinationPath('gradlew')
+      );
 
-    this.fs.copy(
-      this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.properties')),
-      this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.properties'))
-    );
+      this.fs.copy(
+        this.templatePath('gradlew.bat'),
+        this.destinationPath('gradlew.bat')
+      );
+
+      this.fs.copy(
+        this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.jar')),
+        this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.jar'))
+      );
+
+      this.fs.copy(
+        this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.properties')),
+        this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.properties'))
+      );
+    } else {
+      const mavenWrapperPath = '.mvn/wrapper';
+
+      const buildMavenContext = {
+        packageName: this.props.packageName,
+        baseName: this.props.baseName,
+        serviceVersion: this.props.serviceVersion,
+        javaVersion: this.props.javaVersion
+      };
+
+      this.fs.copyTpl(
+        this.templatePath('pom.xml'),
+        this.destinationPath('pom.xml'),
+        buildMavenContext
+      );
+
+      this.fs.copy(
+        this.templatePath('mvnw.cmd'),
+        this.destinationPath('mvnw.cmd')
+      );
+
+      this.fs.copy(
+        this.templatePath('mvnw'),
+        this.destinationPath('mvnw')
+      );
+
+      this.fs.copy(
+        this.templatePath(path.join(mavenWrapperPath, 'maven-wrapper.jar')),
+        this.destinationPath(path.join(mavenWrapperPath, 'maven-wrapper.jar'))
+      );
+
+      this.fs.copy(
+        this.templatePath(path.join(mavenWrapperPath, 'maven-wrapper.properties')),
+        this.destinationPath(path.join(mavenWrapperPath, 'maven-wrapper.properties'))
+      );
+    }
 
     this.fs.copyTpl(
       this.templatePath(path.join(srcMainJavaPath, packageTplPath, 'Application.java')),
