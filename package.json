@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/xaeronation/generator-spring-boot-gradle-ms#readme",
   "dependencies": {
-    "chalk": ".4.1",
+    "chalk": "2.4.1",
     "eslint": "5.11.1",
     "yeoman-generator": "3.2.0",
     "yosay": "2.0.2"
