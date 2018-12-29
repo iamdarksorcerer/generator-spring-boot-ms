@@ -61,6 +61,28 @@ module.exports = class extends Generator {
             value: 'maven'
           }
         ]
+      }, {
+        type: 'checkbox',
+        name: 'opsComponents',
+        message: 'Operation components:',
+        choices: [
+          {
+            name: 'Actuator',
+            value: 'actuator',
+            checked: true
+          },
+        ]
+      }, {
+        type: 'checkbox',
+        name: 'coreComponents',
+        message: 'Core components:',
+        choices: [
+         {
+            name: 'Lombok',
+            value: 'lombok',
+            checked: true
+          },
+        ]
       }
     ];
 
@@ -87,13 +109,16 @@ module.exports = class extends Generator {
 
     if (this.props.buildTool === 'gradle') {
       const gradleWrapperPath = 'gradle/wrapper';
-
+      this.log(this.props.coreComponents);
+      this.log(this.props.coreComponents.indexOf('actuator'));
       const buildGradleContext = {
         packageName: this.props.packageName,
         baseName: this.props.baseName,
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
-        springBootVersion: this.props.springBootVersion
+        springBootVersion: this.props.springBootVersion,
+        actuator: this.props.opsComponents.indexOf('actuator') !== -1,
+        lombok: this.props.coreComponents.indexOf('lombok') !== -1
       };
       const settingsGradleContext = {
         packageName: this.props.packageName,
@@ -141,7 +166,9 @@ module.exports = class extends Generator {
         baseName: this.props.baseName,
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
-        springBootVersion: this.props.springBootVersion
+        springBootVersion: this.props.springBootVersion,
+        actuator: this.props.opsComponents.indexOf('actuator') !== -1,
+        lombok: this.props.coreComponents.indexOf('lombok') !== -1
       };
 
       this.fs.copyTpl(
