@@ -6,11 +6,7 @@ const path = require('path');
 
 module.exports = class extends Generator {
   async prompting() {
-    this.log(
-      yosay(
-        `yO!`
-      )
-    );
+    this.log(yosay(`yO!`));
 
     const prompts = [
       {
@@ -95,6 +91,10 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    const isSelected = function name(components, componentName) {
+      return components.indexOf(componentName) !== -1;
+    };
+
     const packageTplPath = 'net/nineseventwo/template';
     const packagePath = path.join(this.props.packageName.replace(/\./g, '/'), this.props.baseName);
     const srcMainJavaPath = 'src/main/java';
@@ -119,9 +119,9 @@ module.exports = class extends Generator {
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
-        actuator: this.props.opsComponents.indexOf('actuator') !== -1,
-        actuatorDocs: this.props.opsComponents.indexOf('actuatorDocs') !== -1,
-        lombok: this.props.coreComponents.indexOf('lombok') !== -1
+        actuator: isSelected(this.props.opsComponents, 'actuator'),
+        actuatorDocs: isSelected(this.props.opsComponents, 'actuatorDocs'),
+        lombok: isSelected(this.props.coreComponents, 'lombok'),
       };
       const settingsGradleContext = {
         packageName: this.props.packageName,
@@ -170,9 +170,9 @@ module.exports = class extends Generator {
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
-        actuator: this.props.opsComponents.indexOf('actuator') !== -1,
-        actuatorDocs: this.props.opsComponents.indexOf('actuatorDocs') !== -1,
-        lombok: this.props.coreComponents.indexOf('lombok') !== -1
+        actuator: isSelected(this.props.opsComponents, 'actuator'),
+        actuatorDocs: isSelected(this.props.opsComponents, 'actuatorDocs'),
+        lombok: isSelected(this.props.coreComponents, 'lombok'),
       };
 
       this.fs.copyTpl(
