@@ -60,52 +60,41 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    var packageTplPath = 'net/nineseventwo/template'
-    var packagePath = this.props.packageName.replace(/\./g, '/') + '/' + this.props.serviceName;
-    var gradleWrapperPath = 'gradle/wrapper'
-    var srcMainJavaPath = 'src/main/java'
-    var srcMainResourcesPath = 'src/main/resources'
-    var srcMainTestPath = 'src/test/java'
+    var packageTplPath = 'net/nineseventwo/template/'
+    var packagePath = this.props.packageName.replace(/\./g, '/') + '/' + this.props.serviceName + '/';
+    var gradleWrapperPath = 'gradle/wrapper/'
+    var srcMainJavaPath = 'src/main/java/'
+    var srcMainResourcesPath = 'src/main/resources/'
+    var srcMainTestPath = 'src/test/java/'
+
+    var buildGradleOpts = {
+      packageName: this.props.packageName,
+      serviceName: this.props.serviceName,
+      serviceVersion: this.props.serviceVersion,
+      javaVersion: this.props.javaVersion
+    };
+    var settingsGradleOps = {
+      packageName: this.props.packageName,
+      serviceName: this.props.serviceName,
+      serviceVersion: this.props.serviceVersion,
+      javaVersion: this.props.javaVersion
+    };
+    var applicationOpts = {
+      packageName: this.props.packageName,
+      serviceName: this.props.serviceName
+    };
 
     this.fs.copy(this.templatePath('.gitignore'), this.destinationPath('.gitignore'));
-
-    this.fs.copyTpl(
-      this.templatePath('build.gradle'),
-      this.destinationPath('build.gradle'), {
-        packageName: this.props.packageName,
-        serviceName: this.props.serviceName,
-        serviceVersion: this.props.serviceVersion,
-        javaVersion: this.props.javaVersion
-      });
-
-    this.fs.copyTpl(
-      this.templatePath('settings.gradle'),
-      this.destinationPath('settings.gradle'), {
-        packageName: this.props.packageName,
-        serviceName: this.props.serviceName,
-        serviceVersion: this.props.serviceVersion,
-        javaVersion: this.props.javaVersion
-      });
-
-    this.fs.copy(this.templatePath('gradlew'), this.destinationPath('gradlew'), this);
-    this.fs.copy(this.templatePath('gradlew.bat'), this.destinationPath('gradlew.bat'), this);
-    this.fs.copy(this.templatePath(gradleWrapperPath + '/gradle-wrapper.jar'), this.destinationPath(gradleWrapperPath + '/gradle-wrapper.jar'), this);
-    this.fs.copy(this.templatePath(gradleWrapperPath + '/gradle-wrapper.properties'), this.destinationPath(gradleWrapperPath + '/gradle-wrapper.properties'), this);
+    this.fs.copyTpl(this.templatePath('build.gradle'), this.destinationPath('build.gradle'), buildGradleOpts);
+    this.fs.copyTpl(this.templatePath('settings.gradle'), this.destinationPath('settings.gradle'), settingsGradleOps);
+    this.fs.copy(this.templatePath('gradlew'), this.destinationPath('gradlew'));
+    this.fs.copy(this.templatePath('gradlew.bat'), this.destinationPath('gradlew.bat'));
+    this.fs.copy(this.templatePath(gradleWrapperPath + 'gradle-wrapper.jar'), this.destinationPath(gradleWrapperPath + 'gradle-wrapper.jar'));
+    this.fs.copy(this.templatePath(gradleWrapperPath + 'gradle-wrapper.properties'), this.destinationPath(gradleWrapperPath + 'gradle-wrapper.properties'));
 
 
-    this.fs.copyTpl(
-      this.templatePath(srcMainJavaPath + '/' + packageTplPath + '/DemoApplication.java'),
-      this.destinationPath(srcMainJavaPath + '/' + packagePath + '/DemoApplication.java'), {
-        packageName: this.props.packageName,
-        serviceName: this.props.serviceName
-      });
-    this.fs.copy(this.templatePath(srcMainResourcesPath + '/application.yaml'), this.destinationPath(srcMainResourcesPath + '/application.yaml'), this);
-    this.fs.copyTpl(
-      this.templatePath(srcMainTestPath + '/' + packageTplPath + '/DemoApplicationTests.java'),
-      this.destinationPath(srcMainTestPath + '/' + packagePath + '/DemoApplicationTests.java'), {
-        packageName: this.props.packageName,
-        serviceName: this.props.serviceName
-      });
+    this.fs.copyTpl(this.templatePath(srcMainJavaPath + packageTplPath + 'DemoApplication.java'), this.destinationPath(srcMainJavaPath + packagePath + 'DemoApplication.java'), applicationOpts);
+    this.fs.copy(this.templatePath(srcMainResourcesPath + 'application.yaml'), this.destinationPath(srcMainResourcesPath + 'application.yaml'));
+    this.fs.copyTpl(this.templatePath(srcMainTestPath + packageTplPath + 'DemoApplicationTests.java'), this.destinationPath(srcMainTestPath + packagePath + 'DemoApplicationTests.java'), applicationOpts);
   }
-
 };
