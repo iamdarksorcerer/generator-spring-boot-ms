@@ -101,6 +101,13 @@ module.exports = class extends Generator {
     const srcMainResourcesPath = 'src/main/resources';
     const srcMainTestPath = 'src/test/java';
 
+    //#region Components selection
+    const actuatorSelected = isSelected(this.props.opsComponents, 'actuator');
+    const actuatorDocsSelected = isSelected(this.props.opsComponents, 'actuatorDocs');
+
+    const lombokSelected = isSelected(this.props.coreComponents, 'lombok');
+    //#endregion
+
     const applicationContext = {
       packageName: this.props.packageName,
       baseName: this.props.baseName
@@ -112,6 +119,7 @@ module.exports = class extends Generator {
     );
 
     if (this.props.buildTool === 'gradle') {
+      //#region Gradle
       const gradleWrapperPath = 'gradle/wrapper';
       const buildGradleContext = {
         packageName: this.props.packageName,
@@ -119,9 +127,9 @@ module.exports = class extends Generator {
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
-        actuator: isSelected(this.props.opsComponents, 'actuator'),
-        actuatorDocs: isSelected(this.props.opsComponents, 'actuatorDocs'),
-        lombok: isSelected(this.props.coreComponents, 'lombok'),
+        actuator: actuatorSelected,
+        actuatorDocs: actuatorDocsSelected,
+        lombok: lombokSelected,
       };
       const settingsGradleContext = {
         packageName: this.props.packageName,
@@ -161,7 +169,9 @@ module.exports = class extends Generator {
         this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.properties')),
         this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.properties'))
       );
+      //#endregion
     } else {
+      //#region Maven
       const mavenWrapperPath = '.mvn/wrapper';
 
       const buildMavenContext = {
@@ -170,9 +180,9 @@ module.exports = class extends Generator {
         serviceVersion: this.props.serviceVersion,
         javaVersion: this.props.javaVersion,
         springBootVersion: this.props.springBootVersion,
-        actuator: isSelected(this.props.opsComponents, 'actuator'),
-        actuatorDocs: isSelected(this.props.opsComponents, 'actuatorDocs'),
-        lombok: isSelected(this.props.coreComponents, 'lombok'),
+        actuator: actuatorSelected,
+        actuatorDocs: actuatorDocsSelected,
+        lombok: lombokSelected,
       };
 
       this.fs.copyTpl(
@@ -200,6 +210,7 @@ module.exports = class extends Generator {
         this.templatePath(path.join(mavenWrapperPath, 'maven-wrapper.properties')),
         this.destinationPath(path.join(mavenWrapperPath, 'maven-wrapper.properties'))
       );
+      //#endregion
     }
 
     this.fs.copyTpl(
