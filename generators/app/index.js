@@ -1,11 +1,11 @@
 'use strict';
 
 const Generator = require('yeoman-generator');
-const chalk = require('chalk');
 const yosay = require('yosay');
+const path = require('path');
 
 module.exports = class extends Generator {
-  prompting() {
+  async prompting() {
     this.log(
       yosay(
         `yO!`
@@ -20,8 +20,8 @@ module.exports = class extends Generator {
         default: 'net.nineseventwo'
       }, {
         type: 'string',
-        name: 'serviceName',
-        message: 'Service name',
+        name: 'baseName',
+        message: 'Base application name',
         default: 'sandbox'
       }, {
         type: 'string',
@@ -54,47 +54,90 @@ module.exports = class extends Generator {
       }
     ];
 
-    return this.prompt(prompts).then(props => {
-      this.props = props;
-    });
+    const props = await this.prompt(prompts);
+    this.props = props;
   }
 
   writing() {
-    var packageTplPath = 'net/nineseventwo/template/'
-    var packagePath = this.props.packageName.replace(/\./g, '/') + '/' + this.props.serviceName + '/';
-    var gradleWrapperPath = 'gradle/wrapper/'
-    var srcMainJavaPath = 'src/main/java/'
-    var srcMainResourcesPath = 'src/main/resources/'
-    var srcMainTestPath = 'src/test/java/'
+    // Helpers
+    const packageTplPath = 'net/nineseventwo/template';
+    const packagePath = path.join(this.props.packageName.replace(/\./g, '/'), this.props.baseName);
+    const gradleWrapperPath = 'gradle/wrapper';
+    const srcMainJavaPath = 'src/main/java';
+    const srcMainResourcesPath = 'src/main/resources';
+    const srcMainTestPath = 'src/test/java';
 
-    var buildGradleOpts = {
+    // Templates context
+    const buildGradleContext = {
       packageName: this.props.packageName,
-      serviceName: this.props.serviceName,
+      baseName: this.props.baseName,
       serviceVersion: this.props.serviceVersion,
       javaVersion: this.props.javaVersion
     };
-    var settingsGradleOps = {
+    const settingsGradleContext = {
       packageName: this.props.packageName,
-      serviceName: this.props.serviceName,
+      baseName: this.props.baseName,
       serviceVersion: this.props.serviceVersion,
       javaVersion: this.props.javaVersion
     };
-    var applicationOpts = {
+    const applicationContext = {
       packageName: this.props.packageName,
-      serviceName: this.props.serviceName
+      baseName: this.props.baseName
     };
 
-    this.fs.copy(this.templatePath('.gitignore'), this.destinationPath('.gitignore'));
-    this.fs.copyTpl(this.templatePath('build.gradle'), this.destinationPath('build.gradle'), buildGradleOpts);
-    this.fs.copyTpl(this.templatePath('settings.gradle'), this.destinationPath('settings.gradle'), settingsGradleOps);
-    this.fs.copy(this.templatePath('gradlew'), this.destinationPath('gradlew'));
-    this.fs.copy(this.templatePath('gradlew.bat'), this.destinationPath('gradlew.bat'));
-    this.fs.copy(this.templatePath(gradleWrapperPath + 'gradle-wrapper.jar'), this.destinationPath(gradleWrapperPath + 'gradle-wrapper.jar'));
-    this.fs.copy(this.templatePath(gradleWrapperPath + 'gradle-wrapper.properties'), this.destinationPath(gradleWrapperPath + 'gradle-wrapper.properties'));
+    // Copying
+    this.fs.copy(
+      this.templatePath('.gitignore'),
+      this.destinationPath('.gitignore')
+    );
 
+    this.fs.copyTpl(
+      this.templatePath('build.gradle'),
+      this.destinationPath('build.gradle'),
+      buildGradleContext
+    );
 
-    this.fs.copyTpl(this.templatePath(srcMainJavaPath + packageTplPath + 'DemoApplication.java'), this.destinationPath(srcMainJavaPath + packagePath + 'DemoApplication.java'), applicationOpts);
-    this.fs.copy(this.templatePath(srcMainResourcesPath + 'application.yaml'), this.destinationPath(srcMainResourcesPath + 'application.yaml'));
-    this.fs.copyTpl(this.templatePath(srcMainTestPath + packageTplPath + 'DemoApplicationTests.java'), this.destinationPath(srcMainTestPath + packagePath + 'DemoApplicationTests.java'), applicationOpts);
+    this.fs.copyTpl(
+      this.templatePath('settings.gradle'),
+      this.destinationPath('settings.gradle'),
+      settingsGradleContext
+    );
+
+    this.fs.copy(
+      this.templatePath('gradlew'),
+      this.destinationPath('gradlew')
+    );
+
+    this.fs.copy(
+      this.templatePath('gradlew.bat'),
+      this.destinationPath('gradlew.bat')
+    );
+
+    this.fs.copy(
+      this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.jar')),
+      this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.jar'))
+    );
+
+    this.fs.copy(
+      this.templatePath(path.join(gradleWrapperPath, 'gradle-wrapper.properties')),
+      this.destinationPath(path.join(gradleWrapperPath, 'gradle-wrapper.properties'))
+    );
+
+    this.fs.copyTpl(
+      this.templatePath(path.join(srcMainJavaPath, packageTplPath, 'Application.java')),
+      this.destinationPath(path.join(srcMainJavaPath, packagePath, 'Application.java')),
+      applicationContext
+    );
+
+    this.fs.copy(
+      this.templatePath(path.join(srcMainResourcesPath, 'application.yml')),
+      this.destinationPath(path.join(srcMainResourcesPath, 'application.yml'))
+    );
+
+    this.fs.copyTpl(
+      this.templatePath(path.join(srcMainTestPath, packageTplPath, 'ApplicationTests.java')),
+      this.destinationPath(path.join(srcMainTestPath, packagePath, 'ApplicationTests.java')),
+      applicationContext
+    );
   }
 };
