@@ -26,12 +26,12 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter</artifactId>
 	</dependency>
-<% if (actuator) { %>
+	<% if (actuator) { %>
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-actuator</artifactId>
 	</dependency><% } %>
-<% if (lombok) { %>
+	<% if (lombok) { %>
 	<dependency>
 		<groupId>org.projectlombok</groupId>
 		<artifactId>lombok</artifactId>
