@@ -92,7 +92,8 @@ module.exports = class extends Generator {
         packageName: this.props.packageName,
         baseName: this.props.baseName,
         serviceVersion: this.props.serviceVersion,
-        javaVersion: this.props.javaVersion
+        javaVersion: this.props.javaVersion,
+        springBootVersion: this.props.springBootVersion
       };
       const settingsGradleContext = {
         packageName: this.props.packageName,
@@ -139,7 +140,8 @@ module.exports = class extends Generator {
         packageName: this.props.packageName,
         baseName: this.props.baseName,
         serviceVersion: this.props.serviceVersion,
-        javaVersion: this.props.javaVersion
+        javaVersion: this.props.javaVersion,
+        springBootVersion: this.props.springBootVersion
       };
 
       this.fs.copyTpl(
