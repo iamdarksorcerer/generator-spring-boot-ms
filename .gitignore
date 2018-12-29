@@ -91,3 +91,6 @@ build/
 dist/
 
 # End of https://www.gitignore.io/api/node,yeoman
+
+# VSCode
+.vscode/
